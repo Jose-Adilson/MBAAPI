@@ -1,0 +1,10 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <BuildType Name="ReleaseAOT" />
+  </Configurations>
+  <Project Path="MBAAPI.csproj">
+    <BuildType Solution="Debug|*" Project="Release" />
+  </Project>
+</Solution>

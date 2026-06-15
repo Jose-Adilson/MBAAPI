@@ -1,0 +1,21 @@
+# Usamos o sistema operacional EXATO da AWS Lambda
+FROM amazonlinux:2023 AS build
+
+# Instalamos o compilador C++ (clang) e utilitários
+RUN dnf update -y && dnf install -y clang zlib-devel tar gzip libicu
+
+# Baixamos e instalamos o SDK do .NET 10 diretamente no Linux da Amazon
+RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --channel 10.0 --install-dir /usr/share/dotnet
+
+# Avisamos o Linux onde o .NET está instalado
+ENV PATH="/usr/share/dotnet:${PATH}"
+ENV DOTNET_ROOT="/usr/share/dotnet"
+
+WORKDIR /src
+COPY . .
+
+# Compilamos a aplicação 
+RUN dotnet publish "MBAAPI.csproj" -c ReleaseAOT -r linux-x64 --self-contained true /p:PublishAot=true -o /app/publish
+
+# Renomeia o executável gerado para "bootstrap"
+RUN mv /app/publish/MBAAPI /app/publish/bootstrap
