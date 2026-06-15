@@ -1,0 +1,12 @@
+{
+  "AotConfiguration": {
+    "Trimming": {
+      "TrimMode": "partial",
+      "RemoveSymbols": true
+    },
+    "PublishAot": {
+      "Enabled": true,
+      "DebugSymbols": false
+    }
+  }
+}
