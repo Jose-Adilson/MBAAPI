@@ -62,11 +62,10 @@ docker tag mbaapi:v2 [ACCOUNT-ID].dkr.ecr.[REGIAO][.amazonaws.com/](https://.ama
 # 4. Envie a imagem para a AWS
 docker push [ACCOUNT-ID].dkr.ecr.[REGIAO][.amazonaws.com/](https://.amazonaws.com/)[NOME-REPOSITORIO]:v2
 No console da AWS (ECS > Task Definitions), crie uma nova revisão da Task referenciando a tag :v2. Em seguida, atualize o serviço ECS marcando "Force New Deployment".
-
+```
 2. Lambda Native AOT
 Requer publicação voltada para o Custom Runtime da AWS (Amazon Linux 2023 / linux-x64).
-
-Bash
+```bash
 # 1. Publique como Self-Contained para Linux x64
 dotnet publish "MBAAPI.csproj" -c ReleaseAOT -r linux-x64 --self-contained true -o ./publish-aot
 
@@ -79,8 +78,9 @@ zip -j ../function-aot.zip bootstrap
 
 # 4. Atualize o código da função Lambda
 aws lambda update-function-code --function-name [NOME-FUNCAO-AOT] --zip-file fileb://../function-aot.zip
+```
 3. Lambda JIT Tradicional
-Bash
+```bash
 # 1. Publique utilizando a configuração JIT padrão
 dotnet publish "MBAAPI.csproj" -c Release -o ./publish-jit /p:PublishAot=false
 
@@ -90,14 +90,14 @@ zip -r ../function-jit.zip .
 
 # 3. Atualize o código da função Lambda
 aws lambda update-function-code --function-name [NOME-FUNCAO-JIT] --zip-file fileb://../function-jit.zip
-
+```
 📊 Metodologia de Benchmarking (k6)
 Atenção: Mitigação de AWS Throttling (Erro 429)
 Cargas explosivas sem intervalo acionarão o limite de concorrência não reservada da AWS. Para mensurar a latência de regime estável de forma confiável, recomenda-se estabilizar o script em 15 a 20 VUs com 100ms de intervalo por requisição.
 
 Exemplo do script de carga:
 
-JavaScript
+```JavaScript
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
@@ -115,11 +115,12 @@ export default function () {
   check(res, { 'status was 200': (r) => r.status == 200 });
   sleep(0.1); 
 }
+```
 Execução:
 
-Bash
+```bash
 k6 run benchmark.k6.js
-
+```
 ⚙️ Requisitos
 .NET 10.0+
 
